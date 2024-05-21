@@ -158,22 +158,36 @@ COPY ./130_load_demo_atlas_cohort_definitions.sql /docker-entrypoint-initdb.d/13
 # 140 - load demo Atlas concept set definitions
 COPY ./140_load_demo_atlas_conceptset_definitions.sql /docker-entrypoint-initdb.d/140_load_sample_atlas_conceptset_definitions.sql
 
+COPY --chmod=0777 ./bin/prepare-files.sh /usr/local/bin/
+
+FROM data-loader-image AS external-data-loader
+COPY --chmod=0777 ./bin/database-loader.sh /usr/local/bin/
+ENV POSTGRES_HOST="localhost"
+ENV POSTGRES_USER="ohdsi"
+ENV POSTGRES_DB="ohdsi"
+ENV PGPASSWORD="ohdsi"
+ENTRYPOINT [ "database-loader.sh" ]
+
+FROM data-loader-image AS data-loaded-image
+RUN /usr/local/bin/prepare-files.sh "/tmp/*"
+RUN /usr/local/bin/prepare-files.sh "/tmp/demo_cdm_csv_files/*"
 RUN ["sed", "-i", "s/exec \"$@\"/echo \"skipping...\"/", "/usr/local/bin/docker-entrypoint.sh"]
 
 # Pseudo branching logic - we run 2 stages, 1 for default password auth, the other for secrets auth
-FROM data-loader-image AS use-password-default
+FROM data-loaded-image AS use-password-default
+
 ENV POSTGRES_PASSWORD=mypass
 RUN ["/usr/local/bin/docker-entrypoint.sh", "postgres"]
 
-FROM data-loader-image AS use-password-secret
+FROM data-loaded-image AS use-password-secret
 ENV POSTGRES_PASSWORD_FILE="/run/secrets/ATLASDB_POSTGRES_PASSWORD"
 RUN --mount=type=secret,id=ATLASDB_POSTGRES_PASSWORD \
     ["/usr/local/bin/docker-entrypoint.sh", "postgres"]
 
 # then pick the stage based on the PASSWORD_METHOD
-FROM use-password-${PASSWORD_METHOD} AS data-loader-image-final
+FROM use-password-${PASSWORD_METHOD} AS data-loaded-image-final
 
 
 # run the postgres entrypoint script to run the SQL scripts and load the data but do not start the postgres daemon process
 FROM postgres:15.2-alpine
-COPY --from=data-loader-image-final /data $PGDATA
+COPY --from=data-loaded-image-final /data $PGDATA

@@ -49,3 +49,9 @@ Below is the command to build the container:
 ```bash
 docker-compose build
 ```
+
+## Populate an external database
+```bash
+docker build . --target=external-data-loader -t ohdsi/broadseadb-loader:latest 
+docker run -e POSTGRES_HOST="<Your Postgresql Server>" -e POSTGRES_USER="<Your postgres username>" -e POSTGRES_DB="<Your postgres database>" -e PGPASSWORD="<Your postgres password>" ohdsi/broadseadb-loader:latest
+```

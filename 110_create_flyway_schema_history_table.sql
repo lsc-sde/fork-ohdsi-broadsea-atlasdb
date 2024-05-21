@@ -19,8 +19,6 @@ CREATE TABLE webapi.flyway_schema_history
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE webapi.flyway_schema_history
-  OWNER TO postgres;
 
 -- Index: webapi.flyway_schema_history_s_idx
 

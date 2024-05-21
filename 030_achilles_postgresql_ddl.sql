@@ -15,8 +15,6 @@ CREATE TABLE achilles_analysis
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE achilles_analysis
-  OWNER TO postgres;
 
 CREATE TABLE achilles_heel_results
 (
@@ -28,8 +26,6 @@ CREATE TABLE achilles_heel_results
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE achilles_heel_results
-  OWNER TO postgres;
 
 CREATE TABLE achilles_results
 (
@@ -44,8 +40,6 @@ CREATE TABLE achilles_results
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE achilles_results
-  OWNER TO postgres;
 
 CREATE INDEX idx_ar_aid
   ON achilles_results
@@ -83,8 +77,6 @@ CREATE TABLE achilles_results_derived
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE achilles_results_derived
-  OWNER TO postgres;
 
 CREATE TABLE achilles_results_dist
 (
@@ -108,8 +100,6 @@ CREATE TABLE achilles_results_dist
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE achilles_results_dist
-  OWNER TO postgres;
 
 CREATE INDEX idx_ard_aid
   ON achilles_results_dist
@@ -135,5 +125,3 @@ CREATE TABLE achilles_result_concept_count
 WITH (
   OIDS=FALSE
 );
-ALTER TABLE achilles_result_concept_count
-  OWNER TO postgres;
