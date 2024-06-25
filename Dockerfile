@@ -159,6 +159,7 @@ COPY ./130_load_demo_atlas_cohort_definitions.sql /docker-entrypoint-initdb.d/13
 COPY ./140_load_demo_atlas_conceptset_definitions.sql /docker-entrypoint-initdb.d/140_load_sample_atlas_conceptset_definitions.sql
 
 COPY --chmod=0777 ./bin/prepare-files.sh /usr/local/bin/
+COPY --chmod=0777 ./bin/process-sql.sh /usr/local/bin/
 
 FROM data-loader-image AS external-data-loader
 COPY --chmod=0777 ./bin/database-loader.sh /usr/local/bin/
